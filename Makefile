@@ -1,6 +1,7 @@
 # Makefile for Kuro
 
 B = build
+S = src
 
 CC = g++
 CFLAGS = -fcoroutines -std=c++20
@@ -30,5 +31,7 @@ example: $(EXAMPLE_DST)
 format-example: $(EXAMPLE_SRC)
 	@$(FORMAT) $(FFLAGS) $<
 
+format:
+	@$(FORMAT) $(FFLAGS) $S/*
 clean:
 	rm -rf $B
