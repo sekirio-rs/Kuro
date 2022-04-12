@@ -55,14 +55,17 @@ auto yield(unsigned i) {
     unsigned value;
     bool await_ready() { return false; }
     void await_suspend(std::coroutine_handle<> h) {}
-    void await_resume() { std::cout << "resume: " << value << std::endl; }
+    auto await_resume() { return value; }
   };
 
   return awaitable{i};
 }
 
 task multi_resume(unsigned num) {
-  for (unsigned i = 0; i < num; i++) co_await yield(i);
+  for (unsigned i = 0; i < num; i++) {
+    unsigned val = co_await yield(i);
+    std::cout << "resumed: " << val << std::endl;
+  }
 
   co_return;
 }
