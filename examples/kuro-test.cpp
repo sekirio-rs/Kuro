@@ -3,6 +3,8 @@
 #define QD 4
 
 int main() {
+  std::cout << "hello, kuro" << std::endl;
+
   int val = 1;
   __s32* res_ptr;
   struct io_uring ring;
