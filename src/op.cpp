@@ -21,7 +21,11 @@ auto Op<T>::await_resume() {
 }
 
 template <typename T>
-Op<T>::Op(T val, std::shared_ptr<io_uring>& uring, __u64 token, Callback f)
+Op<T>::Op(const T val, std::shared_ptr<io_uring>& uring, __u64 token,
+          Callback f)
     : value(val), token(token), cb(f) {
   uring_handle = uring;
 }
+
+// todo: remove it
+template class Op<int>;
