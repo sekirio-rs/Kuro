@@ -1,4 +1,7 @@
-#include "op.h"
+#include "kuro.h"
+
+thread_local std::map<unsigned long, std::coroutine_handle<>> CO_HANDLES;
+thread_local std::map<unsigned long, __s32*> URING_RESULTS;
 
 template <typename T>
 bool Op<T>::await_ready() {
@@ -10,21 +13,25 @@ void Op<T>::await_suspend(std::coroutine_handle<> h) {
   struct io_uring* handle = uring_handle.get();
   struct io_uring_sqe* sqe = io_uring_get_sqe(handle);
 
-  cb(sqe, &res);
+  cb(sqe);
 
-  io_uring_sqe_set_data(sqe, static_cast<void*>(&token));
+  io_uring_sqe_set_data(sqe, (void*)token);
+
+  CO_HANDLES.insert(std::pair{token, h});
+  URING_RESULTS.insert(std::pair{token, &res});
 }
 
 template <typename T>
-auto Op<T>::await_resume() {
+__s32 Op<T>::await_resume() {
+  CO_HANDLES.erase(token);
   return res;
 }
 
 template <typename T>
-Op<T>::Op(const T val, std::shared_ptr<io_uring>& uring, __u64 token,
-          Callback f)
-    : value(val), token(token), cb(f) {
+Op<T>::Op(const T val, std::shared_ptr<io_uring>& uring, Callback f)
+    : value(val), cb(f) {
   uring_handle = uring;
+  token = (unsigned long)this;
 }
 
 // todo: remove it

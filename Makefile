@@ -9,7 +9,7 @@ CFLAGS = -fcoroutines -std=c++20
 CFLAGS += -Wall -O2 -D_GNU_SOURCE
 CFLAGS += -I./liburing/src/include/
 CFLAGS += -I./src/
-SO_CFLAGS = -fPIC -c
+SO_CFLAGS = -fPIC -shared
 LDFLAGS = -L./$B/ -luring -lkuro
 
 FORMAT = clang-format
@@ -20,12 +20,9 @@ LIB_URING__ = $B/liburing.so
 LIB_OBJ = $B/libkuro.o
 LIB = $B/libkuro.so
 
-$(LIB): $(LIB_OBJ)
-	$(CC) -shared $(LIB_OBJ) -o $(LIB)
-
-$(LIB_OBJ):
+$(LIB):
 	@if [ ! -d $B ]; then mkdir $B; fi
-	$(CC) $(CFLAGS) $(SO_CFLAGS) src/op.cpp -o $(LIB_OBJ)
+	$(CC) $(CFLAGS) $(SO_CFLAGS) src/op.cpp src/read.cpp src/task.cpp -o $(LIB)
 
 $(LIB_URING):
 	@if [ ! -d $B ]; then mkdir $B; fi
