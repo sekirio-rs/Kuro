@@ -1,4 +1,5 @@
 #include <coroutine>
+#include <exception>
 #include <functional>
 #include <iostream>
 #include <map>
@@ -40,20 +41,36 @@ class Read : public Op<int> {
        unsigned nbytes, __u64 offset);
 };
 
-class task {
+template <typename T>
+class Task {
  public:
   struct promise_type;
   using handle_type = std::coroutine_handle<promise_type>;
 
   struct promise_type {
-    task get_return_object() { return task(handle_type::from_promise(*this)); }
+    std::exception_ptr exception_;
+    T value;
+
+    Task get_return_object() { return Task(handle_type::from_promise(*this)); }
     std::suspend_never initial_suspend() { return {}; }
     std::suspend_never final_suspend() noexcept { return {}; }
-    void return_void() {}
-    void unhandled_exception() {}
+    // void return_void() {}
+    std::suspend_never return_value(T v) {
+      value = v;
+
+      if (exception_) std::rethrow_exception(exception_);
+
+      return {};
+    }
+    void unhandled_exception() { exception_ = std::current_exception(); }
   };
 
   handle_type h_;
 
-  task(handle_type h) : h_(h) {}
+  Task(handle_type h) : h_(h) {}
+  ~Task() { h_.destroy(); }
+
+  T result() { return h_.promise().value; }
 };
+
+void async_execute(std::shared_ptr<io_uring>& uring_handle, int task_num);
