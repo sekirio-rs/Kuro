@@ -22,7 +22,7 @@ LIB = $B/libkuro.so
 
 $(LIB):
 	@if [ ! -d $B ]; then mkdir $B; fi
-	$(CC) $(CFLAGS) $(SO_CFLAGS) src/op.cpp src/read.cpp -o $(LIB)
+	$(CC) $(CFLAGS) $(SO_CFLAGS) src/op.cpp src/read.cpp src/task.cpp -o $(LIB)
 
 $(LIB_URING):
 	@if [ ! -d $B ]; then mkdir $B; fi
