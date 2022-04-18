@@ -16,14 +16,12 @@ Task<int> co_read(std::shared_ptr<io_uring>& handle) {
   auto read = Read(handle, fd, buf, 1024, 0);
   __s32 res = co_await read;
   
-  std::cout << buf << std::endl;
+  std::cout << "read res: " << res << std::endl;
 
   co_return 0;
 }
 
 int main() {
-  std::cout << "hello, kuro" << std::endl;
-
   struct io_uring ring;
 
   if (io_uring_queue_init(QD, &ring, 0) < 0) {
@@ -33,10 +31,10 @@ int main() {
   
   std::shared_ptr<io_uring> handle = std::make_shared<io_uring>(ring);
 
-  co_read(handle);
+  auto task = co_read(handle);
   
   async_execute(handle, 1);
-
+  
   return 0;
 }
 

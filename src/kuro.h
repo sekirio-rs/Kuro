@@ -68,7 +68,9 @@ class Task {
   handle_type h_;
 
   Task(handle_type h) : h_(h) {}
-  ~Task() { h_.destroy(); }
+  ~Task() {
+    // h_.destroy();
+  }
 
   T result() { return h_.promise().value; }
 };

@@ -22,17 +22,16 @@ void async_execute(std::shared_ptr<io_uring>& uring_handle, int task_count) {
     io_uring_for_each_cqe(uring, head, cqe) {
       __s32 res = cqe->res;
 
-      if (res < 0) {
-        throw std::runtime_error("cqe res less then zero");  // todo
-        break;
-      }
+      // if (res < 0) {
+      //   throw std::runtime_error("cqe res less then zero");  // todo
+      //   break;
+      // }
 
       unsigned long token = static_cast<unsigned long>(cqe->user_data);
 
       *(URING_RESULTS.find(token)->second) = res;  // set result
 
       CO_HANDLES.find(token)->second.resume();
-
       count++;
     }
   }
