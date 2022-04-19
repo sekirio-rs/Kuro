@@ -25,5 +25,5 @@ class Map : Future<R> {
   }
   R await_resume() { return func(future.await_resume()); }
 
-  Map(U future, std::function<R(T)> func) : future(future), func(func) {}
+  Map(U&& future, std::function<R(T)> func) : future(future), func(func) {}
 };

@@ -19,7 +19,7 @@ Write File::write(std::shared_ptr<io_uring>& uring, const void* buf,
 Map<__s32, OpenAt, int> async_open(std::shared_ptr<io_uring>& uring,
                                    const char* path) {
   OpenAt open = OpenAt(uring, AT_FDCWD, path, O_RDONLY, 0600);
-  auto map =
-      Map<__s32, OpenAt, int>(open, [](__s32 fd) -> int { return (int)fd; });
+  auto map = Map<__s32, OpenAt, int>(std::move(open),
+                                     [](__s32 fd) -> int { return (int)fd; });
   return map;
 }
