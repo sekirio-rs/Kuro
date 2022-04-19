@@ -53,7 +53,6 @@ void async_execute(std::shared_ptr<io_uring>& uring_handle) {
       unsigned long token = static_cast<unsigned long>(cqe->user_data);
 
       *(URING_RESULTS.find(token)->second) = res;  // set result
-      
       CO_HANDLES.find(token)->second.resume();
 
       io_uring_cqe_seen(uring, cqe);
