@@ -8,12 +8,13 @@
 #include <memory>
 #include <stdexcept>
 
+#include "future.h"
 #include "liburing.h"
 
 using Callback = std::function<void(struct io_uring_sqe*)>;
 
 template <typename T>
-class Op {
+class Op : public Future<__s32> {
  public:
   __s32 res;
   std::shared_ptr<io_uring> uring_handle;
@@ -119,9 +120,13 @@ class OpenAt : public Op<int> {
 /* ----- File System ----- */
 class File {
  public:
-   File(int fd);
-   ~File();
-   // todo
- private:
-   int fd;
+  File() {}
+  File(int fd);
+  ~File();
+
+  //  private:
+  int fd;
 };
+
+Map<__s32, OpenAt, int> kuro_open(std::shared_ptr<io_uring>& uring,
+                                  const char* path);
