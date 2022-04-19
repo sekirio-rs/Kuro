@@ -17,6 +17,11 @@ void Op<T>::await_suspend(std::coroutine_handle<> h) {
 
   io_uring_sqe_set_data(sqe, (void*)token);
 
+  std::cout << "sqe->opcode: " << sqe->opcode << std::endl;
+  std::cout << "sqe->fd: " << sqe->fd << std::endl;
+  std::cout << "sqe->flags: " << sqe->flags << std::endl;
+  std::cout << "sqe->user_data: " << sqe->user_data << std::endl;
+
   CO_HANDLES.insert(std::pair{token, h});
   URING_RESULTS.insert(std::pair{token, &res});
 }

@@ -2,6 +2,7 @@
 #include <fcntl.h>
 
 #define QD 4
+#define BUF_LEN 1
 
 // for test
 Task<int> co_read(std::shared_ptr<io_uring>& handle) {
@@ -11,12 +12,13 @@ Task<int> co_read(std::shared_ptr<io_uring>& handle) {
     co_return -1;
   }
 
-  char buf[1024] = { 0 };
+  char buf[BUF_LEN] = { 0 };
+  struct iovec iov = {iov_base: (void*)buf, iov_len: BUF_LEN};
 
-  auto read = Read(handle, fd, buf, 1024, 0);
-  __s32 res = co_await read;
+  auto readv = Readv(handle, fd, &iov, 1, 0);
+  __s32 res = co_await readv;
   
-  std::cout << "read res: " << res << std::endl;
+  std::cout << "readv res: " << res << std::endl;
 
   co_return 0;
 }
@@ -33,7 +35,7 @@ int main() {
 
   auto task = co_read(handle);
   
-  async_execute(handle, 1);
+  async_execute(handle);
   
   return 0;
 }

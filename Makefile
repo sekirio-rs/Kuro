@@ -17,12 +17,12 @@ FFLAGS = --style=google -i
 LIB_URING = $B/liburing.so.2.2
 LIB_URING_ = $B/liburing.so.2
 LIB_URING__ = $B/liburing.so
-LIB_OBJ = $B/libkuro.o
+LIB_SRC = $S/op.cpp $S/read.cpp $S/task.cpp
 LIB = $B/libkuro.so
 
-$(LIB):
+$(LIB): $(LIB_SRC)
 	@if [ ! -d $B ]; then mkdir $B; fi
-	$(CC) $(CFLAGS) $(SO_CFLAGS) src/op.cpp src/read.cpp src/task.cpp -o $(LIB)
+	$(CC) $(CFLAGS) $(SO_CFLAGS) $(LIB_SRC) -o $(LIB)
 
 $(LIB_URING):
 	@if [ ! -d $B ]; then mkdir $B; fi

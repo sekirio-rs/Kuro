@@ -3,16 +3,13 @@
 extern thread_local std::map<unsigned long, std::coroutine_handle<>> CO_HANDLES;
 extern thread_local std::map<unsigned long, __s32*> URING_RESULTS;
 
-void async_execute(std::shared_ptr<io_uring>& uring_handle, int task_count) {
+void async_execute(std::shared_ptr<io_uring>& uring_handle) {
   struct io_uring* uring = uring_handle.get();
-  int count = 0;
 
-  while (true) {
+  while (CO_HANDLES.size() && URING_RESULTS.size()) {
     struct io_uring_cqe* cqe;
     unsigned head;
     int ret = io_uring_submit_and_wait(uring, 1);
-
-    if (count >= task_count) break;
 
     if (ret < 0) {
       throw std::runtime_error("io_uring_submit_and_wait error");  // todo
@@ -32,7 +29,6 @@ void async_execute(std::shared_ptr<io_uring>& uring_handle, int task_count) {
       *(URING_RESULTS.find(token)->second) = res;  // set result
 
       CO_HANDLES.find(token)->second.resume();
-      count++;
     }
   }
   return;
