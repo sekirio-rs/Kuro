@@ -128,5 +128,10 @@ class File {
   int fd;
 };
 
-Map<__s32, OpenAt, int> kuro_open(std::shared_ptr<io_uring>& uring,
-                                  const char* path);
+Map<__s32, OpenAt, int> async_open(std::shared_ptr<io_uring>& uring,
+                                   const char* path);
+
+// failed to be compiled because of bug of gcc
+//
+// Map<__s32, OpenAt, File> async_open(std::shared_ptr<io_uring>& uring,
+//                                   const char*path);

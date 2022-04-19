@@ -8,7 +8,9 @@ Task<int> co_readv(std::shared_ptr<io_uring>& handle) {
   struct iovec iov;
   void* buf;
   
-  int fd = open("README.md", O_RDONLY | O_DIRECT);
+  auto open = async_open(handle, "README.md");
+  int fd = co_await open;
+  
   if (fd < 0) {
     std::cout << "open file error, fd: " << fd << std::endl;
     co_return -1;
@@ -31,7 +33,9 @@ Task<int> co_readv(std::shared_ptr<io_uring>& handle) {
 Task<int> co_read(std::shared_ptr<io_uring>& handle) {
   void* buf;
   
-  int fd = open("README.md", O_RDONLY | O_DIRECT);
+  auto open = async_open(handle, "README.md");
+  int fd = co_await open;
+  
   if (fd < 0) {
     std::cout << "open file error, fd: " << fd << std::endl;
     co_return -1;
