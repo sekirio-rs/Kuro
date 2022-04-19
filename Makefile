@@ -17,7 +17,7 @@ FFLAGS = --style=google -i
 LIB_URING = $B/liburing.so.2.2
 LIB_URING_ = $B/liburing.so.2
 LIB_URING__ = $B/liburing.so
-LIB_SRC = $S/op.cpp $S/read.cpp $S/task.cpp
+LIB_SRC = $S/op.cpp $S/read.cpp $S/write.cpp $S/task.cpp
 LIB = $B/libkuro.so
 
 $(LIB): $(LIB_SRC)
