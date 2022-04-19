@@ -1,3 +1,5 @@
+#include <sys/uio.h>
+
 #include <coroutine>
 #include <exception>
 #include <functional>
@@ -28,17 +30,6 @@ class Op {
 
  private:
   T value;
-};
-
-class Read : public Op<int> {
- public:
-  int fd;
-  void* buf;
-  unsigned nbytes;
-  __u64 offset;
-
-  Read(std::shared_ptr<io_uring>& uring, const int fd, void* buf,
-       unsigned nbytes, __u64 offset);
 };
 
 template <typename T>
@@ -75,4 +66,28 @@ class Task {
   T result() { return h_.promise().value; }
 };
 
-void async_execute(std::shared_ptr<io_uring>& uring_handle, int task_num);
+void async_execute(std::shared_ptr<io_uring>& uring_handle);
+
+/* ----- Events ----- */
+
+class Read : public Op<int> {
+ public:
+  int fd;
+  void* buf;
+  unsigned nbytes;
+  __u64 offset;
+
+  Read(std::shared_ptr<io_uring>& uring, const int fd, void* buf,
+       unsigned nbytes, __u64 offset);
+};
+
+class Readv : public Op<int> {
+ public:
+  int fd;
+  const struct iovec* iov;
+  unsigned nr_vecs;
+  __u64 offset;
+
+  Readv(std::shared_ptr<io_uring>& uring, const int fd, const struct iovec* iov,
+        unsigned nr_vecs, __u64 offset);
+};

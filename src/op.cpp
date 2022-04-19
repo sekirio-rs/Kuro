@@ -14,7 +14,6 @@ void Op<T>::await_suspend(std::coroutine_handle<> h) {
   struct io_uring_sqe* sqe = io_uring_get_sqe(handle);
 
   cb(sqe);
-
   io_uring_sqe_set_data(sqe, (void*)token);
 
   CO_HANDLES.insert(std::pair{token, h});
