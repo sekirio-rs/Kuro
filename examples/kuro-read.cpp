@@ -8,7 +8,11 @@ Task<int> co_readv(std::shared_ptr<io_uring>& handle) {
   struct iovec iov;
   void* buf;
   
-  int fd = open("README.md", O_RDONLY | O_DIRECT);
+  auto open = async_open(handle, "README.md");
+  int fd = co_await open;
+  
+  // int fd = open("README.md", O_RDONLY);
+  
   if (fd < 0) {
     std::cout << "open file error, fd: " << fd << std::endl;
     co_return -1;
@@ -31,7 +35,11 @@ Task<int> co_readv(std::shared_ptr<io_uring>& handle) {
 Task<int> co_read(std::shared_ptr<io_uring>& handle) {
   void* buf;
   
-  int fd = open("README.md", O_RDONLY | O_DIRECT);
+  auto open = async_open(handle, "README.md");
+  int fd = co_await open;
+
+  // int fd = open("README.md", O_RDONLY);
+  
   if (fd < 0) {
     std::cout << "open file error, fd: " << fd << std::endl;
     co_return -1;
@@ -39,10 +47,10 @@ Task<int> co_read(std::shared_ptr<io_uring>& handle) {
 
   if(posix_memalign(&buf, BUF_LEN, BUF_LEN))
     co_return 1;
-
-  auto read = Read(handle, fd, buf, BUF_LEN, 0);
-  __s32 _res = co_await read;
   
+  auto file = File(fd);
+  co_await file.read(handle, buf, BUF_LEN);
+
   std::cout << "read: " << std::endl << (char*)buf << std::endl;
 
   co_return 0;

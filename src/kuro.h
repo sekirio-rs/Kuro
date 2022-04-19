@@ -124,9 +124,18 @@ class File {
   File(int fd);
   ~File();
 
-  //  private:
+  Read read(std::shared_ptr<io_uring>& uring, void* buf, unsigned nbytes);
+  Write write(std::shared_ptr<io_uring>& uring, const void* buf,
+              unsigned nbytes);
+
+ private:
   int fd;
 };
 
-Map<__s32, OpenAt, int> kuro_open(std::shared_ptr<io_uring>& uring,
-                                  const char* path);
+Map<__s32, OpenAt, int> async_open(std::shared_ptr<io_uring>& uring,
+                                   const char* path);
+
+// failed to be compiled because of bug of gcc
+//
+// Map<__s32, OpenAt, File> async_open(std::shared_ptr<io_uring>& uring,
+//                                   const char*path);
