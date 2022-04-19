@@ -124,7 +124,11 @@ class File {
   File(int fd);
   ~File();
 
-  //  private:
+  Read read(std::shared_ptr<io_uring>& uring, void* buf, unsigned nbytes);
+  Write write(std::shared_ptr<io_uring>& uring, const void* buf,
+              unsigned nbytes);
+
+ private:
   int fd;
 };
 
