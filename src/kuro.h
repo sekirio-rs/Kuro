@@ -32,6 +32,8 @@ class Op {
   T value;
 };
 
+/* ----- Coroutine ----- */
+
 template <typename T>
 class Task {
  public:
@@ -101,4 +103,25 @@ class Write : public Op<int> {
 
   Write(std::shared_ptr<io_uring>& uring, const int fd, const void* buf,
         unsigned nbytes, __u64 offset);
+};
+
+class OpenAt : public Op<int> {
+ public:
+  int dfd;
+  const char* path;
+  int flags;
+  mode_t mode;
+
+  OpenAt(std::shared_ptr<io_uring>& uring, int dfd, const char* path, int flags,
+         mode_t mode);
+};
+
+/* ----- File System ----- */
+class File {
+ public:
+   File(int fd);
+   ~File();
+   // todo
+ private:
+   int fd;
 };

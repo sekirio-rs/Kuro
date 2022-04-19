@@ -1,6 +1,5 @@
 #include "kuro.h"
 #include <fcntl.h>
-#include <memory>
 
 #define QD 4
 #define BUF_LEN 10
