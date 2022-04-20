@@ -14,7 +14,7 @@ Entry<T>::Entry(usize next) : next(next) {
 
 template <typename T>
 Slab<T>::Slab(usize capacity) {
-  entries = std::vector<T>(capacity);
+  entries.assign(capacity, Entry<T>(0));
   entries.clear();
   len_ = 0;
   next = 0;
@@ -56,7 +56,7 @@ template <typename T>
 usize Slab<T>::insert(T&& val) {
   auto key = next;
 
-  this->insert_at(key, val);
+  this->insert_at(key, std::move(val));
 
   return key;
 }
@@ -65,7 +65,7 @@ template <typename T>
 void Slab<T>::insert_at(usize key, T&& val) {
   len_++;
   if (key == entries.size()) {
-    entries.push_back(Entry<T>(val));
+    entries.push_back(Entry<T>(std::move(val)));
 
     next = key + 1;
   } else {
@@ -77,7 +77,7 @@ void Slab<T>::insert_at(usize key, T&& val) {
       exit(1);
     }
 
-    entries[key] = Entry<T>(val);
+    entries[key] = Entry<T>(std::move(val));
   }
 }
 
