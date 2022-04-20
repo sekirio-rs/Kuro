@@ -1,6 +1,10 @@
 #include "kuro.h"
+#include "slab.h"
 
-thread_local std::map<unsigned long, std::coroutine_handle<>> CO_HANDLES;
+#define SLAB_CAPACITY 100
+
+thread_local Slab<std::coroutine_handle<>> CO_HANDLES =
+    Slab<std::coroutine_handle<>>(SLAB_CAPACITY);
 thread_local std::map<unsigned long, __s32*> URING_RESULTS;
 
 template <typename T>
@@ -14,15 +18,16 @@ void Op<T>::await_suspend(std::coroutine_handle<> h) {
   struct io_uring_sqe* sqe = io_uring_get_sqe(handle);
 
   cb(sqe);
-  io_uring_sqe_set_data(sqe, (void*)token);
 
-  CO_HANDLES.insert(std::pair{token, h});
+  token = CO_HANDLES.insert(std::move(h));
   URING_RESULTS.insert(std::pair{token, &res});
+
+  io_uring_sqe_set_data(sqe, (void*)token);
 }
 
 template <typename T>
 __s32 Op<T>::await_resume() {
-  CO_HANDLES.erase(token);
+  CO_HANDLES.remove(token);
   return res;
 }
 
@@ -30,7 +35,6 @@ template <typename T>
 Op<T>::Op(const T val, std::shared_ptr<io_uring>& uring, Callback f)
     : value(val), cb(f) {
   uring_handle = uring;
-  token = (unsigned long)this;
 }
 
 // todo: remove it

@@ -18,7 +18,7 @@ LIB_URING = $B/liburing.so.2.2
 LIB_URING_ = $B/liburing.so.2
 LIB_URING__ = $B/liburing.so
 LIB_SRC = $S/op.cpp $S/read.cpp $S/write.cpp $S/open.cpp \
-					$S/file.cpp $S/task.cpp
+					$S/file.cpp $S/task.cpp $S/slab.cpp
 LIB = $B/libkuro.so
 
 $(LIB): $(LIB_SRC)
