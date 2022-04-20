@@ -1,4 +1,5 @@
 #include "kuro.h"
+#include "slab.h"
 
 thread_local std::map<unsigned long, std::coroutine_handle<>> CO_HANDLES;
 thread_local std::map<unsigned long, __s32*> URING_RESULTS;
