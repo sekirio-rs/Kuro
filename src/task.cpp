@@ -1,7 +1,7 @@
 #include "kuro.h"
 #include "slab.h"
 
-extern thread_local Slab<std::coroutine_handle<>> CO_HANDLES;
+extern thread_local slab<std::coroutine_handle<>> CO_HANDLES;
 extern thread_local std::map<unsigned long, __s32*> URING_RESULTS;
 
 void async_execute(std::shared_ptr<io_uring>& uring_handle) {

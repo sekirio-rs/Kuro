@@ -22,9 +22,9 @@ class Entry {
 };
 
 template <typename T>
-class Slab {
+class slab {
  public:
-  Slab(usize capacity);
+  slab(usize capacity);
 
   usize capacity();
 
