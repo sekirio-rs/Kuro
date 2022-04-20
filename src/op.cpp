@@ -3,8 +3,8 @@
 
 #define SLAB_CAPACITY 100
 
-thread_local Slab<std::coroutine_handle<>> CO_HANDLES =
-    Slab<std::coroutine_handle<>>(SLAB_CAPACITY);
+thread_local slab<std::coroutine_handle<>> CO_HANDLES =
+    slab<std::coroutine_handle<>>(SLAB_CAPACITY);
 thread_local std::map<unsigned long, __s32*> URING_RESULTS;
 
 template <typename T>
@@ -28,6 +28,8 @@ void Op<T>::await_suspend(std::coroutine_handle<> h) {
 template <typename T>
 __s32 Op<T>::await_resume() {
   CO_HANDLES.remove(token);
+  URING_RESULTS.erase(token);
+
   return res;
 }
 

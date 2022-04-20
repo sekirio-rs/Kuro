@@ -1,7 +1,7 @@
 #include "kuro.h"
 #include "slab.h"
 
-extern thread_local Slab<std::coroutine_handle<>> CO_HANDLES;
+extern thread_local slab<std::coroutine_handle<>> CO_HANDLES;
 extern thread_local std::map<unsigned long, __s32*> URING_RESULTS;
 
 void async_execute(std::shared_ptr<io_uring>& uring_handle) {
@@ -29,8 +29,8 @@ void async_execute(std::shared_ptr<io_uring>& uring_handle) {
       unsigned long token = static_cast<unsigned long>(cqe->user_data);
 
       *(URING_RESULTS.find(token)->second) = res;  // set result
-      auto co_handle = CO_HANDLES.get(token);
 
+      auto co_handle = CO_HANDLES.get(token);
       if (co_handle.has_value())
         co_handle.value()->resume();
       else
@@ -39,5 +39,6 @@ void async_execute(std::shared_ptr<io_uring>& uring_handle) {
       io_uring_cqe_seen(uring, cqe);
     }
   }
+
   return;
 }
