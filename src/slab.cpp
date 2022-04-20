@@ -1,6 +1,7 @@
 #include "slab.h"
 
 #include <algorithm>
+#include <coroutine>
 
 template <typename T>
 Entry<T>::Entry(T&& val) : val(val) {
@@ -44,8 +45,6 @@ bool Slab<T>::is_empty() {
 
 template <typename T>
 std::optional<T*> Slab<T>::get(usize key) {
-  if (key >= len_) return {};
-
   auto entry = entries.at(key);
 
   if (entry.type_ == ENTRY_VAL) return &entry.val;
@@ -98,3 +97,5 @@ std::optional<T> Slab<T>::remove(usize key) {
     return {};
   }
 }
+
+template class Slab<std::coroutine_handle<>>;
