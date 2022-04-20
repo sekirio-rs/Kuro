@@ -28,6 +28,8 @@ void Op<T>::await_suspend(std::coroutine_handle<> h) {
 template <typename T>
 __s32 Op<T>::await_resume() {
   CO_HANDLES.remove(token);
+  URING_RESULTS.erase(token);
+
   return res;
 }
 

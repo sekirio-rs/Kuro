@@ -5,16 +5,24 @@
 #define BUF_LEN 10
 
 Task<int> co_write(std::shared_ptr<io_uring>& handle) {
-  const char buf[] = "Hello,Kuro";
+  struct iovec iov;
+  char buf[] = "Hello,Kuro";
   
-  int fd = open("temp.md", O_RDWR | O_CREAT, 0600);
-  if (fd < 0) {
-    std::cout << "open file error, fd: " << fd << std::endl;
+  int fd0 = co_await async_create(handle, "temp0.md");
+  int fd1 = co_await async_create(handle, "temp1.md");
+  if (fd0 < 0 || fd1 < 0) {
+    std::cout << "open file error" << std::endl;
     co_return -1;
   }
   
-  auto write = Write(handle, fd, buf, BUF_LEN, 0);
-  __s32 _res = co_await write;
+  auto file0 = File(fd0);
+  co_await file0.write(handle, buf, BUF_LEN);
+  
+  iov.iov_base = buf;
+  iov.iov_len = BUF_LEN;
+
+  auto file1 = File(fd1);
+  co_await file1.writev(handle, &iov, 1);
 
   co_return 0;
 }

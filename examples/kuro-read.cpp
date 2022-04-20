@@ -8,10 +8,7 @@ Task<int> co_readv(std::shared_ptr<io_uring>& handle) {
   struct iovec iov;
   void* buf;
   
-  auto open = async_open(handle, "README.md");
-  int fd = co_await open;
-  
-  // int fd = open("README.md", O_RDONLY);
+  int fd = co_await async_open(handle, "README.md");
   
   if (fd < 0) {
     std::cout << "open file error, fd: " << fd << std::endl;
@@ -23,9 +20,9 @@ Task<int> co_readv(std::shared_ptr<io_uring>& handle) {
 
   iov.iov_base = buf;
   iov.iov_len = BUF_LEN;
-
-  auto readv = Readv(handle, fd, &iov, 1, 0);
-  __s32 _res = co_await readv;
+  
+  auto file = File(fd);
+  co_await file.readv(handle, &iov, 1);
   
   std::cout << "readv: " << std::endl << (char*)buf << std::endl;
 
@@ -35,10 +32,7 @@ Task<int> co_readv(std::shared_ptr<io_uring>& handle) {
 Task<int> co_read(std::shared_ptr<io_uring>& handle) {
   void* buf;
   
-  auto open = async_open(handle, "README.md");
-  int fd = co_await open;
-
-  // int fd = open("README.md", O_RDONLY);
+  int fd = co_await async_open(handle, "README.md");
   
   if (fd < 0) {
     std::cout << "open file error, fd: " << fd << std::endl;
