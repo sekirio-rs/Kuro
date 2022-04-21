@@ -141,6 +141,28 @@ class Accept : public Op<int> {
          socklen_t* len, int flags);
 };
 
+class Recv : public Op<int> {
+ public:
+  int sockfd;
+  void* buf;
+  size_t len;
+  int flags;
+
+  Recv(std::shared_ptr<io_uring>& uring, int sockfd, void* buf, size_t len,
+       int flags);
+};
+
+class Send : public Op<int> {
+ public:
+  int sockfd;
+  const void* buf;
+  size_t len;
+  int flags;
+
+  Send(std::shared_ptr<io_uring>& uring, int sockfd, const void* buf,
+       size_t len, int flags);
+};
+
 /* ----- File System ----- */
 
 class File {
@@ -183,6 +205,10 @@ class TcpStream {
   TcpStream(){};
   TcpStream(int fd);
   ~TcpStream();
+
+  Recv async_recv(std::shared_ptr<io_uring>& uring, void* buf, size_t len);
+  Send async_send(std::shared_ptr<io_uring>& uring, const void* buf,
+                  size_t len);
 };
 
 class TcpListener {

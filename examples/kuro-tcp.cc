@@ -1,11 +1,15 @@
 #include <iostream>
 #include <arpa/inet.h>
+#include <fcntl.h>
+
 #include "kuro.h"
 
 #define QD 4
-#define BACKLOG 1024
+#define BACKLOG 10
+#define BUF_LEN 1024
 
-Task<int> co_bind(std::shared_ptr<io_uring>& handle) {
+Task<int> co_echo(std::shared_ptr<io_uring>& handle) {
+  void* buf;
   TcpListener listener = TcpListener();
   TcpStream stream_ = TcpStream();
 
@@ -13,9 +17,18 @@ Task<int> co_bind(std::shared_ptr<io_uring>& handle) {
   
   listener.listen_socket(BACKLOG);
 
-  int fd = co_await listener.async_accept(handle, &stream_);
+  co_await listener.async_accept(handle, &stream_);
+  
+  if(posix_memalign(&buf, BUF_LEN, BUF_LEN))
+    co_return 1;
 
-  std::cout << "listen with fd: " << fd << std::endl;
+  while(1) {
+    int n = co_await stream_.async_recv(handle, buf, BUF_LEN);
+
+    if (n == 0) break;
+
+    co_await stream_.async_send(handle, buf, BUF_LEN);
+  }
 
   co_return 0;
 }
@@ -30,7 +43,7 @@ int main() {
   
   std::shared_ptr<io_uring> handle = std::make_shared<io_uring>(ring);
   
-  auto task = co_bind(handle);
+  auto task = co_echo(handle);
 
   async_execute(handle);
 
