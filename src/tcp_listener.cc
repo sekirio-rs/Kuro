@@ -17,7 +17,6 @@ TcpListener::~TcpListener() { close(sockfd); }
 
 void TcpListener::bind_socket(const char* ip_addr,
                               unsigned short int sin_port) {
-  struct sockaddr_in addr;
   struct in_addr sin_addr;
 
   if (inet_aton(ip_addr, &sin_addr) == 0)
@@ -32,4 +31,23 @@ void TcpListener::bind_socket(const char* ip_addr,
     throw std::runtime_error("bind(2) return -1");
 
   return;
+}
+
+void TcpListener::listen_socket(int backlog) {
+  if (listen(sockfd, backlog) == -1)
+    throw std::runtime_error("listen(2) return -1");
+}
+
+Map<__s32, Accept, int> TcpListener::async_accept(
+    std::shared_ptr<io_uring>& uring, TcpStream* stream_) {
+  auto accept = Accept(uring, sockfd, &stream_->addr, &stream_->len, 0);
+  int* stream_fd_ptr = &stream_->fd;
+
+  auto map = Map<__s32, Accept, int>(std::move(accept),
+                                     [stream_fd_ptr](__s32 fd) -> int {
+                                       *stream_fd_ptr = (int)fd;
+                                       return (int)fd;
+                                     });
+
+  return map;
 }

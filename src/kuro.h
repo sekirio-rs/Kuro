@@ -130,6 +130,17 @@ class OpenAt : public Op<int> {
          mode_t mode);
 };
 
+class Accept : public Op<int> {
+ public:
+  int sockfd;
+  struct sockaddr* addr;
+  socklen_t* len;
+  int flags;
+
+  Accept(std::shared_ptr<io_uring>& uring, int sockfd, struct sockaddr* addr,
+         socklen_t* len, int flags);
+};
+
 /* ----- File System ----- */
 
 class File {
@@ -163,6 +174,17 @@ Map<__s32, OpenAt, int> async_create(std::shared_ptr<io_uring>& uring,
 
 /* ----- Net ----- */
 
+class TcpStream {
+ public:
+  int fd;
+  struct sockaddr addr;
+  socklen_t len;
+
+  TcpStream(){};
+  TcpStream(int fd);
+  ~TcpStream();
+};
+
 class TcpListener {
  public:
   TcpListener();
@@ -170,7 +192,11 @@ class TcpListener {
   ~TcpListener();
 
   void bind_socket(const char* ip_addr, unsigned short int sin_port);
+  void listen_socket(int backlog);
+  Map<__s32, Accept, int> async_accept(std::shared_ptr<io_uring>& uring,
+                                       TcpStream* stream_);
 
  private:
   int sockfd;
+  struct sockaddr_in addr;
 };
