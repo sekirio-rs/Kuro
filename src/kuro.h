@@ -1,3 +1,5 @@
+#include <linux/in.h>
+#include <sys/socket.h>
 #include <sys/uio.h>
 
 #include <coroutine>
@@ -129,6 +131,7 @@ class OpenAt : public Op<int> {
 };
 
 /* ----- File System ----- */
+
 class File {
  public:
   File() {}
@@ -157,3 +160,17 @@ Map<__s32, OpenAt, int> async_open(std::shared_ptr<io_uring>& uring,
 
 Map<__s32, OpenAt, int> async_create(std::shared_ptr<io_uring>& uring,
                                      const char* path);
+
+/* ----- Net ----- */
+
+class TcpListener {
+ public:
+  TcpListener();
+  TcpListener(int sockfd);
+  ~TcpListener();
+
+  void bind_socket(const char* ip_addr, unsigned short int sin_port);
+
+ private:
+  int sockfd;
+};
