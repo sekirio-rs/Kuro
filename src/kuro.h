@@ -1,3 +1,5 @@
+#include <linux/in.h>
+#include <sys/socket.h>
 #include <sys/uio.h>
 
 #include <coroutine>
@@ -128,7 +130,41 @@ class OpenAt : public Op<int> {
          mode_t mode);
 };
 
+class Accept : public Op<int> {
+ public:
+  int sockfd;
+  struct sockaddr* addr;
+  socklen_t* len;
+  int flags;
+
+  Accept(std::shared_ptr<io_uring>& uring, int sockfd, struct sockaddr* addr,
+         socklen_t* len, int flags);
+};
+
+class Recv : public Op<int> {
+ public:
+  int sockfd;
+  void* buf;
+  size_t len;
+  int flags;
+
+  Recv(std::shared_ptr<io_uring>& uring, int sockfd, void* buf, size_t len,
+       int flags);
+};
+
+class Send : public Op<int> {
+ public:
+  int sockfd;
+  const void* buf;
+  size_t len;
+  int flags;
+
+  Send(std::shared_ptr<io_uring>& uring, int sockfd, const void* buf,
+       size_t len, int flags);
+};
+
 /* ----- File System ----- */
+
 class File {
  public:
   File() {}
@@ -157,3 +193,36 @@ Map<__s32, OpenAt, int> async_open(std::shared_ptr<io_uring>& uring,
 
 Map<__s32, OpenAt, int> async_create(std::shared_ptr<io_uring>& uring,
                                      const char* path);
+
+/* ----- Net ----- */
+
+class TcpStream {
+ public:
+  int fd;
+  struct sockaddr addr;
+  socklen_t len;
+
+  TcpStream(){};
+  TcpStream(int fd);
+  ~TcpStream();
+
+  Recv async_recv(std::shared_ptr<io_uring>& uring, void* buf, size_t len);
+  Send async_send(std::shared_ptr<io_uring>& uring, const void* buf,
+                  size_t len);
+};
+
+class TcpListener {
+ public:
+  TcpListener();
+  TcpListener(int sockfd);
+  ~TcpListener();
+
+  void bind_socket(const char* ip_addr, unsigned short int sin_port);
+  void listen_socket(int backlog);
+  Map<__s32, Accept, int> async_accept(std::shared_ptr<io_uring>& uring,
+                                       TcpStream* stream_);
+
+ private:
+  int sockfd;
+  struct sockaddr_in addr;
+};

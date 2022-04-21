@@ -17,8 +17,7 @@ FFLAGS = --style=google -i
 LIB_URING = $B/liburing.so.2.2
 LIB_URING_ = $B/liburing.so.2
 LIB_URING__ = $B/liburing.so
-LIB_SRC = $S/op.cpp $S/read.cpp $S/write.cpp $S/open.cpp \
-					$S/file.cpp $S/task.cpp $S/slab.cpp
+LIB_SRC = $(shell echo $S/*.cc)
 LIB = $B/libkuro.so
 
 $(LIB): $(LIB_SRC)
@@ -37,12 +36,12 @@ $(LIB_URING__): $(LIB_URING)
 
 uring: $(LIB_URING_) $(LIB_URING__)
 
-EXAMPLE_SRC = $(shell echo $E/*.cpp)
-EXAMPLE_DST = $(patsubst $E/%, %, $(patsubst %.cpp, %, $(EXAMPLE_SRC)))
+EXAMPLE_SRC = $(shell echo $E/*.cc)
+EXAMPLE_DST = $(patsubst $E/%, %, $(patsubst %.cc, %, $(EXAMPLE_SRC)))
 
 $(EXAMPLE_DST): $(LIB_URING_) $(LIB_URING__) $(LIB)
 	@if [ ! -d $B ]; then mkdir $B; fi
-	$(CC) $(CFLAGS) $(patsubst %, $E/%.cpp, $@) -o $B/$@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(patsubst %, $E/%.cc, $@) -o $B/$@ $(LDFLAGS)
 
 example: $(EXAMPLE_DST)
 
