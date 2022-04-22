@@ -1,3 +1,7 @@
+#if !defined(__cpp_impl_coroutine)
+#define __cpp_impl_coroutine 1
+#endif
+
 #include <linux/in.h>
 #include <sys/socket.h>
 #include <sys/uio.h>
