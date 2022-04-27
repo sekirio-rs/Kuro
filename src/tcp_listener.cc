@@ -15,6 +15,20 @@ TcpListener::TcpListener(int sockfd) : sockfd(sockfd) {}
 
 TcpListener::~TcpListener() { close(sockfd); }
 
+void TcpListener::set_reuseaddr(bool reuseaddr) {
+  int opt = reuseaddr ? 1 : 0;
+  if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (const void*)&opt,
+                 sizeof(opt)) < 0)
+    throw std::runtime_error("set_reuseaddr error");
+}
+
+void TcpListener::set_reuseport(bool reuseport) {
+  int opt = reuseport ? 1 : 0;
+  if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, (const void*)&opt,
+                 sizeof(opt)) < 0)
+    throw std::runtime_error("set_reuseport error");
+}
+
 void TcpListener::bind_socket(const char* ip_addr,
                               unsigned short int sin_port) {
   struct in_addr sin_addr;
