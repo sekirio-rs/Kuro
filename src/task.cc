@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "kuro.h"
 #include "slab.h"
 
@@ -22,7 +24,10 @@ void async_execute(std::shared_ptr<io_uring>& uring_handle) {
       __s32 res = cqe->res;
 
       if (res < 0) {
-        throw std::runtime_error("cqe res less then zero");  // todo
+        char msg[80];
+        sprintf(msg, "io_uring cqe res less then zero: %d, flags: %d\n", res,
+                cqe->flags);
+        throw std::runtime_error(msg);
         break;
       }
 
