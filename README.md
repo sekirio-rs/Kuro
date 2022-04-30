@@ -9,6 +9,34 @@ relies on C++ 20 coroutine syntax and Linux io_uring feature,
 aiming to build easy, flexible and high-performance
 `asynchorous programming framework` in C++.
 
+## Example
+```C++
+Task<int> co_echo(std::shared_ptr<io_uring>& handle) {
+  void* buf;
+  TcpListener listener = TcpListener();
+  TcpStream stream_ = TcpStream();
+
+  listener.bind_socket("127.0.0.1", htons(3344));
+  
+  listener.listen_socket(1024);
+
+  co_await listener.async_accept(handle, &stream_);
+  
+  if(posix_memalign(&buf, 1024, 1024))
+    co_return 1;
+
+  while(1) {
+    int n = co_await stream_.async_recv(handle, buf, 1024);
+
+    if (n == 0) break;
+
+    co_await stream_.async_send(handle, buf, 1024);
+  }
+
+  co_return 0;
+}
+```
+
 ## Build
 ```shell
 git clone https://github.com/sekirio-rs/Kuro
