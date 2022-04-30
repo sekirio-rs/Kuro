@@ -11,6 +11,10 @@ aiming to build easy, flexible and high-performance
 
 ## Build
 ```shell
+git clone https://github.com/sekirio-rs/Kuro
+cd Kuro
+git submodule update --init
+
 make # build kuro.so
 make example # build examples
 ```
