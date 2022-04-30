@@ -22,7 +22,7 @@ First, generate the `kuro.so`:
 ```shell
 cd Kuro
 make
-// then kuro.so will be in Kuro/build
+# then kuro.so will be in Kuro/build
 ```
 
 Then `include "kuro.h"` in your code(xxx.cc) and compile it:
@@ -30,9 +30,9 @@ Then `include "kuro.h"` in your code(xxx.cc) and compile it:
 g++ -fcoroutines -std=c++20 -Wall -O2 -D_GNU_SOURCE xxx.cc -o xxx -luring -lkuro
 ```
 
-**WARNING**: make sure liburing.so.* be prepared in your system.
+**WARNING**: make sure liburing.so.* be prepared in your system. See https://github.com/axboe/liburing to setup it.
 
-> See how `Makefile` build examples for usage details.
+> See how `Makefile` build examples for compile details.
 
 ## License
 Copyright (C) 2022 SKTT1Ryze. All rights reserved.
