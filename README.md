@@ -16,7 +16,7 @@ make example # build examples
 ```
 
 ## How to use
-`Kuro` works as a dynamic link library(.so).
+`Kuro` works as a dynamic library(.so).
 
 First, generate the `kuro.so`:
 ```shell
@@ -31,7 +31,7 @@ g++ -fcoroutines -std=c++20 -Wall -O2 -D_GNU_SOURCE xxx.cc -o xxx -luring -lkuro
 ```
 
 **WARNING**:
-* Make sure liburing.so.* be prepared in your system to successfully compiled. See https://github.com/axboe/liburing to setup it.
+* Make sure `liburing.so.*` be prepared in your system to successfully compiled. See https://github.com/axboe/liburing to setup it.
 * Checkout your Linux kernel version. >= 5.13 will be 100% OK, otherwise may `-22` be returned on some IO operations.
 * Checkout your gcc(g++) version, makesure it support C++ 20 and coroutine.
 
