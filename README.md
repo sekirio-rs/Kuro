@@ -6,7 +6,7 @@ Linux io_uring based c++ 20 coroutine library
 
 In this case, it refers to a basic coroutine library, which
 relies on C++ 20 coroutine syntax and Linux io_uring feature,
-aiming to build easy, flexible and high performance
+aiming to build easy, flexible and high-performance
 `asynchorous programming framework` in C++.
 
 ## Build
@@ -30,7 +30,10 @@ Then `include "kuro.h"` in your code(xxx.cc) and compile it:
 g++ -fcoroutines -std=c++20 -Wall -O2 -D_GNU_SOURCE xxx.cc -o xxx -luring -lkuro
 ```
 
-**WARNING**: make sure liburing.so.* be prepared in your system. See https://github.com/axboe/liburing to setup it.
+**WARNING**:
+* Make sure liburing.so.* be prepared in your system to successfully compiled. See https://github.com/axboe/liburing to setup it.
+* Checkout your Linux kernel version. >= 5.13 will be 100% OK, otherwise may `-22` be returned on some IO operations.
+* Checkout your gcc(g++) version, makesure it support C++ 20 and coroutine.
 
 > See how `Makefile` build examples for compile details.
 
