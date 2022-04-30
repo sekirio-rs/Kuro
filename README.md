@@ -2,7 +2,7 @@
 Linux io_uring based c++ 20 coroutine library
 
 ## What is "Kuro"?
-`Kuro` is a character in Game `Sekiro` by `From Software`.
+`Kuro` is a character in Game [Sekiro](https://www.sekirothegame.com/) by [FromSoftware](https://www.fromsoftware.jp/ww/).
 
 In this case, it refers to a basic coroutine library, which
 relies on C++ 20 coroutine syntax and Linux io_uring feature,
