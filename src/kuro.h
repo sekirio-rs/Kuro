@@ -39,7 +39,7 @@ using Callback = std::function<void(struct io_uring_sqe*)>;
 
 /*
  * Coroutine is usually treated as resumable function in C++
- * and asynchorous task in Rust.
+ * and asynchronous task in Rust.
  *
  * [`Task`] here refers to return type of coroutine function:
  * ```C++
@@ -105,7 +105,7 @@ class Task {
  * auto task0 = co_read();
  * auto task1 = co_read();
  *
- * // asynchorous execute
+ * // asynchorously execute
  * async_execute(handle);
  *
  * // both of task0 and task1 have been done.
@@ -151,7 +151,7 @@ class Op : public Future<__s32> {
 };
 
 /*
- * Asynchorous and awaitable object equal to read(2).
+ * Asynchronous and awaitable object equal to read(2).
  *
  * example:
  * ```C++
@@ -180,7 +180,7 @@ class Read : public Op<int> {
 };
 
 /*
- * Asynchorous and awaitable object equal to readv(2).
+ * Asynchronous and awaitable object equal to readv(2).
  *
  * example:
  * ```C++
@@ -209,7 +209,7 @@ class Readv : public Op<int> {
 };
 
 /*
- * Asynchorous and awaitable object equal to write(2).
+ * Asynchronous and awaitable object equal to write(2).
  *
  * example:
  * ```C++
@@ -238,7 +238,7 @@ class Write : public Op<int> {
 };
 
 /*
- * Asynchorous and awaitable object equal to writev(2).
+ * Asynchronous and awaitable object equal to writev(2).
  *
  * example:
  * ```C++
@@ -267,7 +267,7 @@ class Writev : public Op<int> {
 };
 
 /*
- * Asynchorous and awaitable object equal to openat(2).
+ * Asynchronous and awaitable object equal to openat(2).
  *
  * example:
  * ```C++
@@ -294,7 +294,7 @@ class OpenAt : public Op<int> {
 };
 
 /*
- * Asynchorous and awaitable object equal to accept(2).
+ * Asynchronous and awaitable object equal to accept(2).
  *
  * example:
  * ```C++
@@ -324,7 +324,7 @@ class Accept : public Op<int> {
 };
 
 /*
- * Asynchorous and awaitable object equal to recv(2).
+ * Asynchronous and awaitable object equal to recv(2).
  *
  * example:
  * ```C++
@@ -351,7 +351,7 @@ class Recv : public Op<int> {
 };
 
 /*
- * Asynchorous and awaitable object equal to send(2).
+ * Asynchronous and awaitable object equal to send(2).
  *
  * example:
  * ```C++
@@ -408,7 +408,7 @@ class File {
   ~File();
 
   /*
-   * Asynchorous and awaitable read at file equal to read(2).
+   * Asynchronous and awaitable read at file equal to read(2).
    *
    * See examples in [`Read`] and
    * https://man7.org/linux/man-pages/man2/read.2.html
@@ -416,7 +416,7 @@ class File {
   Read read(std::shared_ptr<io_uring>& uring, void* buf, unsigned nbytes);
 
   /*
-   * Asynchorous and awaitable readv at file equal to readv(2).
+   * Asynchronous and awaitable readv at file equal to readv(2).
    *
    * See examples in [`Readv`] and
    * https://man7.org/linux/man-pages/man2/readv.2.html
@@ -425,7 +425,7 @@ class File {
               unsigned nr_vecs);
 
   /*
-   * Asynchorous and awaitable write at file equal to write(2).
+   * Asynchronous and awaitable write at file equal to write(2).
    *
    * See examples in [`Write`] and
    * https://man7.org/linux/man-pages/man2/write.2.html
@@ -434,7 +434,7 @@ class File {
               unsigned nbytes);
 
   /*
-   * Asynchorous and awaitable writev at file equal to writev(2).
+   * Asynchronous and awaitable writev at file equal to writev(2).
    *
    * See examples in [`Writev`] and
    * https://man7.org/linux/man-pages/man2/writev.2.html
@@ -447,7 +447,7 @@ class File {
 };
 
 /*
- * Asynchorous open file with read-only mode.
+ * Asynchronous open file with read-only mode.
  *
  * `WARNING`: the type of return value is [`int`] instead of [`File`].
  *
@@ -476,7 +476,7 @@ Map<__s32, OpenAt, int> async_open(std::shared_ptr<io_uring>& uring,
 //                                   const char*path);
 
 /*
- * Asynchorous create file with read-write mode.
+ * Asynchronous create file with read-write mode.
  * */
 Map<__s32, OpenAt, int> async_create(std::shared_ptr<io_uring>& uring,
                                      const char* path);
@@ -515,7 +515,7 @@ class TcpStream {
   ~TcpStream();
 
   /*
-   * Asynchorous and awaitable recv at stream equal to recv(2).
+   * Asynchronous and awaitable recv at stream equal to recv(2).
    *
    * See examples in [`Recv`] and
    * https://man7.org/linux/man-pages/man2/recv.2.html
@@ -523,7 +523,7 @@ class TcpStream {
   Recv async_recv(std::shared_ptr<io_uring>& uring, void* buf, size_t len);
 
   /*
-   * Asynchorous and awaitable send at stream equal to send(2).
+   * Asynchronous and awaitable send at stream equal to send(2).
    *
    * See examples in [`Send`] and
    * https://man7.org/linux/man-pages/man2/send.2.html
@@ -581,7 +581,7 @@ class TcpListener {
   void listen_socket(int backlog);
 
   /*
-   * Asynchorous and awaitable accept a connection equal to accept(2).
+   * Asynchronous and awaitable accept a connection equal to accept(2).
    *
    * See examples in [`Accept`] and
    * https://man7.org/linux/man-pages/man2/accept.2.html

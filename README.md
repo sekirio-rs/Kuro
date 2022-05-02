@@ -7,7 +7,7 @@ Linux io_uring based c++ 20 coroutine library
 In this case, it refers to a basic coroutine library, which
 relies on C++ 20 coroutine syntax and Linux io_uring feature,
 aiming to build easy, flexible and high-performance
-`asynchorous programming framework` in C++.
+`asynchronous programming framework` in C++.
 
 ## Example
 ```C++
