@@ -65,10 +65,10 @@ g++ -fcoroutines -std=c++20 -Wall -O2 -D_GNU_SOURCE xxx.cc -o xxx -luring -lkuro
 **WARNING**:
 * Make sure `liburing.so.*` be prepared in your system to successfully compiled. See https://github.com/axboe/liburing to setup it.
 * Checkout your Linux kernel version. >= 5.13 will be 100% OK, otherwise may `-22` be returned on some IO operations.
-* Checkout your gcc(g++) version, makesure it support C++ 20 and coroutine.
+* Checkout your gcc(g++) version, make sure it support C++ 20 and coroutine.
 
 
-> See how `Makefile` build examples for compile details.
+> See how `Makefile` build examples for compiling details.
 
 ## License
 Copyright (C) 2022 SKTT1Ryze. All rights reserved.
