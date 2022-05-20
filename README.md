@@ -30,7 +30,7 @@ Task<int> co_echo(std::shared_ptr<io_uring>& handle) {
 
     if (n == 0) break;
 
-    co_await stream_.async_send(handle, buf, 1024);
+    co_await stream_.async_send(handle, buf, n);
   }
 
   co_return 0;
