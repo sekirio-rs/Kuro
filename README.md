@@ -1,3 +1,5 @@
+<img src="./assets/kuro.jpg" width=300 high=200 align="left">
+
 # Kuro
 Linux io_uring based c++ 20 coroutine library
 
